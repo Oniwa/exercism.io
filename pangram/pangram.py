@@ -1,8 +1,11 @@
 def is_pangram(sentence):
     """
-    :param sentence:
-    :return:
+    This function checks to see if a sentence is a pangram.
+
+    :param sentence:  System to check
+    :return:  True if it is a pangram; False if it is not
     """
+    # Disctionary of all letters to track occurences of each letter in sentence
     letters = {'a': 0,
                'b': 0,
                'c': 0,
@@ -31,10 +34,14 @@ def is_pangram(sentence):
                'z': 0,
                }
 
+    # Remove all whitespace and special characters while making each letter lowercase
     sentence = ''.join(e.lower() for e in sentence if e.isalnum())
+
+    # Iterates through sentence and increments the dictionary value of each letter
     for letter in sentence:
         letters[letter] += 1
 
+    # If any letter is equal to 0 then the sentence is not a pangram
     for key in letters:
         if(letters[key] == 0):
             return False
