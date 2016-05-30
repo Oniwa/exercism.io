@@ -26,4 +26,19 @@ def encode(data):
     return encoded_data
 
 def decode(data):
-    return data
+    data = list(data)
+    count = 0
+    letter = ''
+    decoded_data = ""
+
+    for i, item in enumerate(data):
+        if item.isdigit():
+            count = int(item)
+            letter = data[i + 1]
+            decoded_data = decoded_data + "{}".format(count * letter)
+        else:
+            new_letter = item
+            if(new_letter != letter):
+                decoded_data = decoded_data + "{}".format(letter)
+
+    return decoded_data
