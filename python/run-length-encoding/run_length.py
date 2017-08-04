@@ -39,6 +39,7 @@ def decode(data):
         else:
             new_letter = item
             if(new_letter != letter):
+                letter = new_letter
                 decoded_data = decoded_data + "{}".format(letter)
 
     return decoded_data
