@@ -1,4 +1,5 @@
 def rotate(input_text, key):
+    # Turn a number into its corresponding letter of the alphabet
     number_to_letter = {'1': 'a',
                         '2': 'b',
                         '3': 'c',
@@ -27,6 +28,7 @@ def rotate(input_text, key):
                         '26': 'z',
                         }
 
+    # Turns a letter into its number position in the alphabet
     letter_to_number = {'a': 1,
                         'b': 2,
                         'c': 3,
@@ -55,9 +57,13 @@ def rotate(input_text, key):
                         'z': 26,
                         }
 
-    text = list(input_text)
-    cypher_text = []
+    text = list(input_text)  # Text to encrypt
+    cypher_text = []  # Cypher text to return
 
+    # For each letter convert it into a number and then add the key.  If the
+    # resulting number is larger than 26 subtract 26 from it.  This will give
+    # the position of the new cypher letter.  Do not transform things that are
+    # not letters just  leave them as they were before.
     for letter in text:
         if letter.isalpha():
             if letter.isupper():
@@ -78,6 +84,7 @@ def rotate(input_text, key):
         else:
             cypher_text.append(letter)
 
+    # Reconstruct the string output
     cypher_text = ''.join(cypher_text)
 
     return cypher_text
