@@ -1,15 +1,5 @@
 # Direction Constants
-NORTH = 0
-EAST = 1
-SOUTH = 2
-WEST = 3
-
-# Dictionary to transform an integer into a direction
-NEW_DIRECTION = {0: NORTH,
-                 1: EAST,
-                 2: SOUTH,
-                 3: WEST
-                 }
+NORTH, EAST, SOUTH, WEST = range(4)
 
 
 class Robot(object):
@@ -45,20 +35,10 @@ class Robot(object):
 
     def turn_left(self):
         # To get the new bearing after turning left the old bearing value
-        # is subtracted by one.  If the number is negative then it went from
-        # North to West.
-        new_bearing = self.bearing - 1
-        if new_bearing < 0:
-            self.bearing = NEW_DIRECTION[WEST]
-        else:
-            self.bearing = NEW_DIRECTION[new_bearing]
+        # is subtracted by one.  Using modulo handles turning from North to West
+        self.bearing = (self.bearing - 1) % 4
 
     def turn_right(self):
         # To get the new bearing after turning right the one is added to the
-        # old bearing value.  If the number is greater than 3 it went from
-        # West to North.
-        new_bearing = self.bearing + 1
-        if new_bearing > 3:
-            self.bearing = NEW_DIRECTION[NORTH]
-        else:
-            self.bearing = NEW_DIRECTION[new_bearing]
+        # old bearing value.  Using modulo handles turning from West to North
+        self.bearing = (self.bearing + 1) % 4
