@@ -67,7 +67,7 @@ def say_two_digits(number):
 
 def say_three_digits(number):
     number_digits = str(number)
-    
+
     if int(number_digits[1]) == int(number_digits[2]) == 0:
         verbal_number = "{} hundred".format(ones[int(number_digits[0])])
     else:
