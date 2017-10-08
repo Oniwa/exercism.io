@@ -91,3 +91,17 @@ def say_four_digits(number):
                                                     say_three_digits(three_digits))
 
     return verbal_number
+
+
+def number_splitter(number):
+    number = str(number)
+    tmp_list = []
+    split_numbers = []
+    while len(number):
+        tmp_list.insert(0, number[-3:])
+        number = number[:-3]
+
+    for item in tmp_list:
+        item = int(item)
+        split_numbers.append(item)
+    return split_numbers
