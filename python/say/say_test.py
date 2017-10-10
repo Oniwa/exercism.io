@@ -1,7 +1,6 @@
 import unittest
 
 from say import say
-from say import number_splitter
 
 
 # test cases adapted from `x-common//canonical-data.json` @ version: 1.0.0
@@ -71,19 +70,6 @@ class SayTest(unittest.TestCase):
     def test_number_negative(self):
         with self.assertRaises(AttributeError):
             say(-1)
-
-
-class NumberSplitter(unittest.TestCase):
-    def test_three_digit_or_less_number(self):
-        self.assertEqual(number_splitter(1), [1])
-        self.assertEqual(number_splitter(12), [12])
-        self.assertEqual(number_splitter(123), [123])
-
-    def test_four_digits(self):
-        self.assertEqual(number_splitter(1234), [1, 234])
-
-    def test_seven_digits(self):
-        self.assertEqual(number_splitter(1234567), [1, 234, 567])
 
 
 if __name__ == '__main__':

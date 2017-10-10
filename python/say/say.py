@@ -1,100 +1,66 @@
-ones = {0: 'zero',
-        1: 'one',
-        2: 'two',
-        3: 'three',
-        4: 'four',
-        5: 'five',
-        6: 'six',
-        7: 'seven',
-        8: 'eight',
-        9: 'nine'
-        }
+NAMES = {
+    1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven',
+    8: 'eight', 9: 'nine',
 
-tens = {2: 'twenty',
-        3: 'thirty',
-        4: 'forty',
-        5: 'fifty',
-        6: 'sixty',
-        7: 'sevent',
-        8: 'eighty',
-        9: 'ninety'
-        }
+    10: 'ten', 11: 'eleven', 12: 'twelve', 13: 'thirteen', 14: 'fourteen',
+    15: 'fifteen', 16: 'sixteen', 17: 'seventeen', 18: 'eighteen',
+    19: 'nineteen',
 
-teens = {10: 'ten',
-         11: 'eleven',
-         12: 'twelve',
-         13: 'thirteen',
-         14: 'fourteen',
-         15: 'fifteen',
-         16: 'sixteen',
-         17: 'seventeen',
-         18: 'eighteen',
-         19: 'nineteen'
-         }
+    20: 'twenty', 30: 'thirty', 40: 'forty', 50: 'fifty', 60: 'sixty',
+    70: 'seventy', 80: 'eighty', 90: 'ninety',
+}
 
-power_3 = {0: '',
-           1: ' thousand ',
-           2: ' million ',
-           3: ' billion '
-           }
+POWERS_OF_TEN = {3: 'thousand', 6: 'million', 9: 'billion'}
+MAX_POWER_OF_TEN = max(POWERS_OF_TEN) + 3
+
+
+def _less_than_a_hundred(number):
+    """
+    Helper function for _less_than_a_thousand().  Handles numbers from 1 to 99
+    (and raises an exception for anything outside that range).
+    """
+    if number in NAMES:
+        return NAMES[number]
+    tens, ones = divmod(number, 10)
+    return '%s-%s' % (NAMES[tens * 10], NAMES[ones])
+
+
+def _less_than_a_thousand(number, force_and=False):
+    """
+    Helper function for say().  Handles numbers from 1 to 999 (for numbers
+    outside this range, this function will return unreliable results or raise
+    an exception).
+    """
+    hundreds, rest = divmod(number, 100)
+    return_list = []
+    if hundreds:
+        return_list.extend((NAMES[hundreds], 'hundred'))
+    if (hundreds or force_and) and rest:
+        return_list.append('and')
+    if rest:
+        return_list.append(_less_than_a_hundred(rest))
+    return ' '.join(return_list)
+
 
 def say(number):
-    number = int(number)
-    if number >= 1e12 or number < 0:
-        raise AttributeError
-    number_to_say = number_splitter(number)
-    number_of_digits = len(str(number))
-    verbal_number = []
-    count = 0
-    if number_of_digits == 1 and number_to_say == [0]:
-        return ones[0]
-    for item in reversed(number_to_say):
-        verbal_number.append(say_number(item, count))
-        count += 1
-
-    answer =  ''.join(reversed(verbal_number))
-    return answer.strip()
-
-
-def say_number(number, count):
-    number_digits = str(number)
-    verbal_number = None
-
+    if not 0 <= number < 10 ** MAX_POWER_OF_TEN:
+        raise AttributeError('Why is this an AttributeError?')
     if number == 0:
-        verbal_number = ''
-    elif 0 < number < 10:
-        verbal_number = '{}{}'.format(ones[number], power_3[count])
-    elif 10 <= number < 20:
-        verbal_number = '{}{}'.format(teens[number], power_3[count])
-    elif 20 <= number < 100:
-        if int(number_digits[1]) > 0:
-            verbal_number = '{}-{}{}'.format(tens[int(number_digits[0])],
-                                             ones[int(number_digits[1])],
-                                             power_3[count])
-        else:
-            verbal_number = tens[int(number_digits[0])]
-    elif 100 <= number < 1000:
-        if int(number_digits[1]) == int(number_digits[2]) == 0:
-            verbal_number = "{} hundred{}".format(ones[int(number_digits[0])],
-                                           power_3[count])
-        else:
-            two_digits = '{}{}'.format(number_digits[1], number_digits[2])
-            two_digits = int(two_digits)
-            verbal_number = "{} hundred and {}".format(ones[int(number_digits[0])],
-                                                       say_number(two_digits, count))
+        return 'zero'
 
-    return verbal_number
-
-
-def number_splitter(number):
-    number = str(number)
-    tmp_list = []
-    split_numbers = []
-    while len(number):
-        tmp_list.insert(0, number[-3:])
-        number = number[:-3]
-
-    for item in tmp_list:
-        item = int(item)
-        split_numbers.append(item)
-    return split_numbers
+    representation = []
+    power_of_ten = 0
+    while number:
+        number, this_portion = divmod(number, 1000)
+        if this_portion:
+            if power_of_ten in POWERS_OF_TEN:
+                representation.append(POWERS_OF_TEN[power_of_ten])
+            # To handle things like "one million and two", we need to tell the
+            # helper function that it must include "and" just in case this
+            # portion is the under-1000 part of the number *and* there's a part
+            # of the number over 1000.
+            force_and = (power_of_ten == 0 and number)
+            representation.append(_less_than_a_thousand(this_portion,
+                                                        force_and=force_and))
+        power_of_ten += 3
+    return ' '.join(reversed(representation))
