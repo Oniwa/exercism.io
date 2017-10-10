@@ -33,13 +33,15 @@ teens = {10: 'ten',
          }
 
 power_3 = {0: '',
-           1: 'thousand',
-           2: 'million and',
-           3: 'billion and'
+           1: ' thousand ',
+           2: ' million ',
+           3: ' billion '
            }
 
 def say(number):
     number = int(number)
+    if number >= 1e12 or number < 0:
+        raise AttributeError
     number_to_say = number_splitter(number)
     number_of_digits = len(str(number))
     verbal_number = []
@@ -50,7 +52,8 @@ def say(number):
         verbal_number.append(say_number(item, count))
         count += 1
 
-    return ' '.join(reversed(verbal_number))
+    answer =  ''.join(reversed(verbal_number))
+    return answer.strip()
 
 
 def say_number(number, count):
@@ -58,15 +61,16 @@ def say_number(number, count):
     verbal_number = None
 
     if number == 0:
-        verbal_number = power_3[count + 1]
-    elif 0 <= number < 10:
-        verbal_number = ones[number]
+        verbal_number = ''
+    elif 0 < number < 10:
+        verbal_number = '{}{}'.format(ones[number], power_3[count])
     elif 10 <= number < 20:
-        verbal_number = teens[number]
+        verbal_number = '{}{}'.format(teens[number], power_3[count])
     elif 20 <= number < 100:
         if int(number_digits[1]) > 0:
-            verbal_number = '{}-{}'.format(tens[int(number_digits[0])],
-                                           ones[int(number_digits[1])])
+            verbal_number = '{}-{}{}'.format(tens[int(number_digits[0])],
+                                             ones[int(number_digits[1])],
+                                             power_3[count])
         else:
             verbal_number = tens[int(number_digits[0])]
     elif 100 <= number < 1000:
@@ -77,7 +81,7 @@ def say_number(number, count):
             two_digits = '{}{}'.format(number_digits[1], number_digits[2])
             two_digits = int(two_digits)
             verbal_number = "{} hundred and {}".format(ones[int(number_digits[0])],
-                                                       say_number(two_digits, 0))
+                                                       say_number(two_digits, count))
 
     return verbal_number
 
